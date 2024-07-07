@@ -24,7 +24,6 @@ if operation == 'c':
     rawdata = win32clipboard.GetClipboardData()
     try:
         data = json.loads(rawdata)
-        print(data)
     except:
         print("failed to read json data from clipboard")
 else:     
@@ -37,11 +36,18 @@ jsonDataType = args.type
 
 if node != '':
     parts = node.split(".")
+    
     for part in parts:
+        index_parts = part.split("[")
+        index = 0
+        if len(index_parts) > 1 : 
+            index = index_parts[1]
+            index = index.strip("]")
+            part = index_parts[0]
         if part in data:
             data = data[part]
-if isinstance(data, list):
-    data = data[0]
+            if isinstance(data, list):
+                data = data[int(index)]
 for key, value in data.items():
     match jsonDataType:
         case 'a':
