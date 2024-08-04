@@ -18,7 +18,7 @@ parser.add_argument('-r', '--root-node', default='', help='the root node to star
 args = parser.parse_args()
 operation = args.operation
 
-data = None
+data = {}
 if operation == 'c':
     win32clipboard.OpenClipboard()
     rawdata = win32clipboard.GetClipboardData()
@@ -39,20 +39,47 @@ if node != '':
     
     for part in parts:
         index_parts = part.split("[")
-        index = 0
+        
+        index = "all"
+        # if we have an array object
         if len(index_parts) > 1 : 
             index = index_parts[1]
             index = index.strip("]")
-            part = index_parts[0]
+            
+            partname = index_parts[0]
+            part = partname
+        if isinstance(data, list):
+            #print(data)
+            if index == "all":
+                newData = []
+                for d in data :
+                    #print(d)
+                    finalValue = d[part]
+                    newData.append(finalValue)
+                
+                data = newData
+                    #data.append(last_parts)
+            elif index == "count":
+                print(data.count)
+            
+            else:
+                print("test")
+                data = data[int(index)]
+        #print(data)    
         if part in data:
             data = data[part]
-            if isinstance(data, list):
-                data = data[int(index)]
-for key, value in data.items():
-    match jsonDataType:
-        case 'a':
-            print(key)
-        case 'v':
-            print(value)
-    
+            
+if (type(data) == dict):
+    for key, value in data.items():
+            match jsonDataType:
+                case 'a':
+                    print(key)
+                case 'v':
+                    print(value)
+elif type(data) == list:
+    for d in data:
+        print(d)
+else:
+    print(data)
+    # print( test)
     
